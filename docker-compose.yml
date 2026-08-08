@@ -1,0 +1,34 @@
+services:
+  frontend:
+      build:
+        context: ./frontend
+      container_name: frontendimg
+      ports:
+        - "3000:80"
+      depends_on:
+        - backend
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backendimg
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - backend_uploads:/app/file_uploads
+    depends_on:
+      - redis 
+  
+  redis:
+    image: redis:7-alpine
+    container_name: redisimg
+    ports:
+      - "6379:6379"
+
+volumes:
+  backend_uploads:
